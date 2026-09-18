@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新進標準化病人訓練成效評核表｜奇美醫院臨床技能中心</title>
+<style>
+:root{
+  --navy:#0B1A3A; --navy-2:#1B3163;
+  --orange:#F39220; --orange-deep:#D97A0A;
+  --paper:#F5F7FA; --card:#FFF;
+  --ink:#1B2430; --ink-soft:#4A5768; --muted:#7C8899;
+  --line:#DFE5EC; --line-2:#C6D0DC;
+  --danger:#B3261E; --danger-bg:#FDF2F1; --ok:#1B6E4F;
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--sp-7:48px;
+  --r:4px; --r-md:8px;
+  --font:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.7}
+.wrap{max-width:1000px;margin:0 auto;padding:0 var(--sp-4) var(--sp-7)}
+
+/* 表頭 */
+.masthead{background:var(--navy);color:#fff;border-bottom:4px solid var(--orange)}
+.masthead .wrap{padding-top:var(--sp-6);padding-bottom:var(--sp-5)}
+.org{margin:0;font-size:14px;letter-spacing:.08em;color:#B9C6DC}
+.masthead h1{margin:var(--sp-2) 0 var(--sp-3);font-size:26px;font-weight:700}
+.purpose{margin:0;max-width:62ch;font-size:14px;color:#9FB1CC;line-height:1.75}
+
+/* 區塊 */
+.block{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:var(--sp-5);margin-top:var(--sp-4);box-shadow:0 1px 2px rgba(11,26,58,.05)}
+.block:first-of-type{margin-top:var(--sp-5)}
+.block > h2{margin:0 0 var(--sp-4);font-size:17px;font-weight:700;color:var(--navy);
+  display:flex;align-items:center;gap:var(--sp-3);padding-bottom:var(--sp-3);border-bottom:1px solid var(--line)}
+.num{flex:none;width:26px;height:26px;border-radius:var(--r);background:var(--navy);color:#fff;
+  font-size:14px;font-weight:600;display:inline-flex;align-items:center;justify-content:center}
+.block > h2 .sub{margin-left:auto;font-size:13px;font-weight:400;color:var(--muted)}
+
+/* 一般欄位 */
+.grid{display:grid;gap:var(--sp-4)}
+.g3{grid-template-columns:1.1fr 1fr 1fr}
+.g2{grid-template-columns:1fr 1fr}
+@media(max-width:700px){.g2,.g3{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:var(--sp-2);min-width:0}
+label{font-size:14px;font-weight:600;color:var(--ink-soft)}
+.req::after{content:"必填";margin-left:var(--sp-2);font-size:12px;color:var(--orange-deep)}
+.hint{font-size:13px;color:var(--muted);font-weight:400}
+input[type=text],input[type=date],select,textarea{width:100%;font:inherit;font-size:15px;color:var(--ink);
+  background:#fff;border:1px solid var(--line-2);border-radius:var(--r);padding:10px var(--sp-3);
+  transition:border-color .15s,box-shadow .15s}
+textarea{min-height:110px;resize:vertical;line-height:1.75}
+input:hover,select:hover,textarea:hover{border-color:#9FB0C4}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(243,146,32,.22)}
+.is-error input,.is-error textarea,.is-error select{border-color:var(--danger);background:var(--danger-bg)}
+.err{display:none;font-size:13px;color:var(--danger);font-weight:600}
+.is-error .err{display:block}
+.minguo{font-size:13px;color:var(--navy-2);font-weight:600}
+
+/* ── 評核矩陣 ── */
+.mhead,.mrow{display:grid;grid-template-columns:minmax(0,1fr) repeat(10,38px) 58px;align-items:center}
+.mhead{position:sticky;top:0;z-index:5;background:#fff;border-bottom:2px solid var(--navy);
+  padding-bottom:var(--sp-2);margin-bottom:var(--sp-2)}
+.mgroup{grid-column:span 2;text-align:center;font-size:12.5px;font-weight:700;color:var(--navy);line-height:1.3}
+.mgroup span{display:block;font-size:11px;font-weight:400;color:var(--muted)}
+.mhead .mscore{text-align:center;font-size:12px;color:var(--muted)}
+.mrow{padding:var(--sp-3) 0;border-bottom:1px dashed var(--line)}
+.mrow:last-child{border-bottom:none}
+.mrow.is-error{background:var(--danger-bg);border-radius:var(--r)}
+.mitem{padding-right:var(--sp-4);font-size:15px;line-height:1.6}
+.mitem b{color:var(--navy);font-weight:700;margin-right:var(--sp-2)}
+.mitem span{color:var(--ink-soft);font-size:14px}
+.pill{display:flex;align-items:center;justify-content:center;height:34px;margin:0 2px;
+  border:1px solid var(--line-2);border-radius:var(--r);background:#fff;cursor:pointer;
+  font-size:14px;font-variant-numeric:tabular-nums;color:var(--ink-soft);
+  transition:background .12s,border-color .12s,color .12s}
+.pill.gsep{margin-left:8px}
+.pill:hover{border-color:var(--navy-2);background:#F3F6FB}
+.pill input{position:absolute;opacity:0;width:0;height:0}
+.pill:has(input:checked){background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
+.pill:has(input:focus-visible){box-shadow:0 0 0 3px rgba(243,146,32,.35)}
+.rowscore{text-align:center;font-size:14px;font-weight:700;color:var(--orange-deep);font-variant-numeric:tabular-nums}
+.rowscore:empty::before{content:"—";color:var(--line-2);font-weight:400}
+.mlegend{display:none}
+
+@media(max-width:820px){
+  .mhead{display:none}
+  .mrow{grid-template-columns:repeat(10,1fr);gap:var(--sp-1);padding:var(--sp-4) 0}
+  .mitem{grid-column:1/-1;padding:0 0 var(--sp-2)}
+  .mlegend{display:grid;grid-column:1/-1;grid-template-columns:repeat(5,1fr);
+    font-size:11px;color:var(--muted);text-align:center;padding-bottom:2px}
+  .pill{margin:0}
+  .pill.gsep{margin-left:0;border-left-width:2px;border-left-color:var(--line)}
+  .rowscore{grid-column:1/-1;text-align:right;padding-top:var(--sp-2)}
+  .rowscore:not(:empty)::after{content:" 分"}
+}
+
+/* 統計 */
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-3);margin-top:var(--sp-4)}
+@media(max-width:700px){.summary{grid-template-columns:repeat(2,1fr)}}
+.stat{border:1px solid var(--line);border-radius:var(--r);padding:var(--sp-3) var(--sp-4);background:#FAFCFF}
+.stat.total{background:var(--navy);border-color:var(--navy)}
+.stat dt{margin:0;font-size:13px;color:var(--muted)}
+.stat.total dt{color:#B9C6DC}
+.stat dd{margin:var(--sp-1) 0 0;font-size:24px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums}
+.stat.total dd{color:var(--orange)}
+.stat dd small{font-size:13px;font-weight:400;color:var(--muted)}
+.stat.total dd small{color:#9FB1CC}
+
+/* 綜合評估 */
+.verdicts{display:flex;flex-direction:column;gap:var(--sp-2)}
+.verdict{display:flex;gap:var(--sp-3);align-items:flex-start;border:1px solid var(--line-2);
+  border-radius:var(--r);padding:var(--sp-3) var(--sp-4);cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
+.verdict:hover{border-color:#9FB0C4;background:#FAFCFF}
+.verdict input{accent-color:var(--navy);width:17px;height:17px;margin-top:5px;flex:none}
+.verdict:has(input:checked){border-color:var(--navy);background:#EEF3FA}
+.verdict b{display:block;color:var(--navy);font-size:15.5px}
+.verdict span{font-size:13.5px;color:var(--ink-soft)}
+.is-error .verdict{border-color:var(--danger)}
+
+/* 送出列 */
+.actions{position:sticky;bottom:0;margin-top:var(--sp-4);background:rgba(245,247,250,.94);
+  backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:var(--sp-4) 0;
+  display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap;z-index:6}
+.status{font-size:13px;color:var(--muted);margin-right:auto}
+button{font:inherit;font-size:15px;border-radius:var(--r);cursor:pointer;border:1px solid transparent;
+  padding:11px var(--sp-5);transition:background .15s,border-color .15s}
+.btn-main{background:var(--orange);color:#3A2200;font-weight:700;border-color:var(--orange-deep)}
+.btn-main:hover{background:var(--orange-deep);color:#fff}
+.btn-main:disabled{background:#E3E8EF;color:var(--muted);border-color:var(--line-2);cursor:progress}
+.btn-ghost{background:#fff;color:var(--navy);border-color:var(--line-2);font-weight:600}
+.btn-ghost:hover{border-color:var(--navy);background:#F3F6FB}
+button:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(243,146,32,.35)}
+
+.result{display:none;margin-top:var(--sp-4);padding:var(--sp-5);border-radius:var(--r-md);border:1px solid}
+.result.show{display:block}
+.result h3{margin:0 0 var(--sp-2);font-size:18px}
+.result.ok{background:#F1F8F4;border-color:#BBDCC9;color:var(--ok)}
+.result.bad{background:var(--danger-bg);border-color:#EAC3C0;color:var(--danger)}
+.result p{margin:var(--sp-2) 0 0;font-size:14px;color:var(--ink-soft)}
+.result code{background:#fff;border:1px solid var(--line);padding:2px 6px;border-radius:3px}
+
+.sign{display:none}
+@media print{
+  body{background:#fff;font-size:12px}
+  .masthead{background:#fff;color:#000;border-bottom:2px solid #000}
+  .org,.purpose{color:#333}
+  .num{background:#000}
+  .block{border:1px solid #999;box-shadow:none;break-inside:avoid;margin-top:10px;padding:12px}
+  .actions,.result,.err,.hint,.mlegend{display:none !important}
+  .req::after{content:""}
+  .mhead{position:static}
+  .pill{height:26px;font-size:11px}
+  .pill:has(input:checked){background:#000 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .stat.total{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  input,select,textarea{border:none;border-bottom:1px solid #999;border-radius:0}
+  textarea{min-height:0}
+  .sign{display:flex;gap:48px;margin-top:26px}
+  .sign div{flex:1;border-top:1px solid #000;padding-top:6px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="org">奇美醫療財團法人奇美醫院　教學部臨床技能中心</p>
+    <h1>新進標準化病人訓練成效評核表</h1>
+    <p class="purpose">本表協助 SP 訓練師評估新進標準化病人完成培訓課程後，對教案的理解、角色扮演的準確性及專業態度的掌握程度。</p>
+  </div>
+</header>
+
+<div class="wrap">
+<form id="f" novalidate>
+
+  <!-- 基本資料 -->
+  <section class="block">
+    <h2>受評資料</h2>
+    <div class="grid g3">
+      <div class="field" data-field="spName">
+        <label for="spName" class="req">受評標準化病人</label>
+        <input type="text" id="spName" autocomplete="off" placeholder="姓名">
+        <span class="err">請填寫受評標準化病人姓名</span>
+      </div>
+      <div class="field">
+        <label for="spId">SP 編號<span class="hint">（無則免填）</span></label>
+        <input type="text" id="spId" autocomplete="off" placeholder="例：SP-042">
+      </div>
+      <div class="field" data-field="trainDate">
+        <label for="trainDate" class="req">訓練日期</label>
+        <input type="date" id="trainDate">
+        <span class="minguo" id="trainDateMinguo"></span>
+        <span class="err">請選擇訓練日期</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 一 -->
+  <section class="block">
+    <h2><span class="num">一</span>劇本掌握與角色扮演<span class="sub">共 5 項</span></h2>
+    <div class="matrix" id="sec1"></div>
+  </section>
+
+  <!-- 二 -->
+  <section class="block">
+    <h2><span class="num">二</span>標準化與互動<span class="sub">共 3 項</span></h2>
+    <div class="matrix" id="sec2"></div>
+  </section>
+
+  <!-- 三 -->
+  <section class="block">
+    <h2><span class="num">三</span>專業態度與學習<span class="sub">共 4 項</span></h2>
+    <div class="matrix" id="sec3"></div>
+  </section>
+
+  <!-- 統計 -->
+  <section class="block">
+    <h2>評分統計<span class="sub">依量表換算（10 分＝95 分，每降 1 級減 5 分）</span></h2>
+    <div class="summary">
+      <dl class="stat"><dt>一、劇本掌握與角色扮演</dt><dd id="avg1">—</dd></dl>
+      <dl class="stat"><dt>二、標準化與互動</dt><dd id="avg2">—</dd></dl>
+      <dl class="stat"><dt>三、專業態度與學習</dt><dd id="avg3">—</dd></dl>
+      <dl class="stat total"><dt>換算總分</dt><dd id="avgAll">—<small id="doneCount"> 尚未完成</small></dd></dl>
+    </div>
+  </section>
+
+  <!-- 四 -->
+  <section class="block">
+    <h2><span class="num">四</span>訓練師綜合評估<span class="sub">單選</span></h2>
+    <div class="field" data-field="verdict">
+      <div class="verdicts">
+        <label class="verdict"><input type="radio" name="verdict" value="推薦執行">
+          <span><b>推薦執行</b><span>已達標準，可開始執行相關教案。</span></span></label>
+        <label class="verdict"><input type="radio" name="verdict" value="需加強訓練">
+          <span><b>需加強訓練</b><span>尚需針對特定項目進行額外輔導或練習。</span></span></label>
+        <label class="verdict"><input type="radio" name="verdict" value="不建議">
+          <span><b>不建議</b><span>經評估，目前在多個核心項目上未達標準，或特質上可能不適任 SP 工作。</span></span></label>
+      </div>
+      <span class="err">請勾選一項整體評價</span>
+    </div>
+    <div class="field" data-field="comment" style="margin-top:var(--sp-4)">
+      <label for="comment">具體建議與後續安排<span class="hint">（勾選「需加強訓練」或「不建議」時必填）</span></label>
+      <textarea id="comment" maxlength="1000" placeholder="請具體指出需加強的項目、建議的練習方式或後續複評安排……"></textarea>
+      <span class="err">請說明需加強的項目與後續安排</span>
+    </div>
+  </section>
+
+  <!-- 訓練師 -->
+  <section class="block">
+    <h2>訓練師資料</h2>
+    <div class="grid g2">
+      <div class="field" data-field="trainer">
+        <label for="trainer" class="req">標準化病人訓練師</label>
+        <input type="text" id="trainer" autocomplete="off" placeholder="姓名">
+        <span class="err">請填寫訓練師姓名</span>
+      </div>
+      <div class="field" data-field="fileDate">
+        <label for="fileDate" class="req">填表日期</label>
+        <input type="date" id="fileDate">
+        <span class="minguo" id="fileDateMinguo"></span>
+        <span class="err">請選擇填表日期</span>
+      </div>
+    </div>
+    <div class="sign">
+      <div>標準化病人訓練師簽名</div>
+      <div>技能中心主管核章</div>
+    </div>
+  </section>
+
+  <div class="actions">
+    <span class="status" id="status">草稿會自動暫存於本機瀏覽器</span>
+    <button type="button" class="btn-ghost" id="btnClear">清除草稿</button>
+    <button type="button" class="btn-ghost" id="btnPrint">列印簽名用紙本</button>
+    <button type="submit" class="btn-main" id="btnSubmit">送出評核</button>
+  </div>
+
+  <div class="result" id="result" role="status" aria-live="polite"></div>
+</form>
+</div>
+
+<script>
+/* ═══ 部署後改這兩行 ═══ */
+const API_URL   = 'https://script.google.com/macros/s/AKfycbzQpbTM1D8f_HKwjmXe-IjnFOsbXkxAmQapH6rgHpTAtwn66tIST6vlCz6X_zScFH4s/exec';
+const API_TOKEN = 'CHIMEI-SPT-2026';   // 需與 Apps Script 的 SHARED_TOKEN 一致
+/* ═════════════════════ */
+
+const DRAFT_KEY = 'sp_eval_draft_v1';
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+/* 評核項目定義：要增刪題目改這裡，Apps Script 的 ITEMS 也要同步 */
+const SECTIONS = [
+  { id:'sec1', key:'s1', items:[
+    ['1.1','熟悉病史','能準確記憶並陳述病患基本資料、過去病史、主訴等關鍵資訊。'],
+    ['1.2','症狀呈現','能依據劇本設定，準確演繹病徵（如：疼痛程度、部位）。'],
+    ['1.3','情緒與態度','能自然且一致地展現教案設定的病患情緒、個性和態度。'],
+    ['1.4','非語言表達','姿態、表情、語氣及肢體動作皆符合角色設定。'],
+    ['1.5','角色一致性','在演練過程中能持續維持在角色內，不「出戲」。']
+  ]},
+  { id:'sec2', key:'s2', items:[
+    ['2.1','資訊提供','能依據學員的提問給予「標準化」的資訊，不過度引導或隱藏線索。'],
+    ['2.2','應變能力','面對非預期問題或情境時，能合乎角色邏輯地回應。'],
+    ['2.3','穩定性','在重複演練中，能維持角色表現的穩定與一致性。']
+  ]},
+  { id:'sec3', key:'s3', items:[
+    ['3.1','守時與準備','訓練期間能準時出席，並已做好演練前的準備。'],
+    ['3.2','接受指導','能專心聆聽訓練師的指導，並虛心接受修正建議。'],
+    ['3.3','學習意願','展現積極的學習態度，並在指導後能具體改進。'],
+    ['3.4','團隊合作','能與其他 SP 及工作人員良好溝通與協作。']
+  ]}
+];
+const GROUPS = [['非常同意','10‧9'],['同意','8‧7'],['普通','6‧5'],['不同意','4‧3'],['非常不同意','2‧1']];
+const LEVELS = [10,9,8,7,6,5,4,3,2,1];
+const toScore = lv => 45 + lv * 5;          // 10→95、9→90 …… 1→50
+/* 題號含小數點，不能直接當 CSS 的 #id 選擇器，一律換成底線 */
+const scoreId = code => 'score-' + code.replace('.', '_');
+const allItems = SECTIONS.flatMap(s => s.items.map(i => i[0]));
+
+/* 建立矩陣 */
+function buildMatrix(){
+  SECTIONS.forEach(sec => {
+    const box = $('#' + sec.id);
+    const head = document.createElement('div');
+    head.className = 'mhead';
+    head.innerHTML = '<div></div>' +
+      GROUPS.map(g => `<div class="mgroup">${g[0]}<span>${g[1]}</span></div>`).join('') +
+      '<div class="mscore">換算</div>';
+    box.appendChild(head);
+
+    sec.items.forEach(([code, name, desc]) => {
+      const row = document.createElement('div');
+      row.className = 'mrow';
+      row.dataset.field = 'item-' + code;
+      const legend = `<div class="mlegend">${GROUPS.map(g=>`<span>${g[0]}</span>`).join('')}</div>`;
+      const pills = LEVELS.map((lv,i) =>
+        `<label class="pill${i%2===0&&i>0?' gsep':''}">
+           <input type="radio" name="item-${code}" value="${lv}">${lv}</label>`).join('');
+      row.innerHTML =
+        `<div class="mitem"><b>${code}</b>${name}：<span>${desc}</span></div>` +
+        legend + pills + `<div class="rowscore" id="${scoreId(code)}"></div>`;
+      box.appendChild(row);
+    });
+  });
+}
+
+/* 計分 */
+function recalc(){
+  let filled = 0, allScores = [];
+  SECTIONS.forEach((sec, idx) => {
+    const scores = [];
+    sec.items.forEach(([code]) => {
+      const sel = document.querySelector(`input[name="item-${code}"]:checked`);
+      const cell = document.getElementById(scoreId(code));
+      if(sel){
+        const sc = toScore(+sel.value);
+        cell.textContent = sc;
+        scores.push(sc); allScores.push(sc); filled++;
+      } else { cell.textContent = ''; }
+    });
+    const el = $('#avg' + (idx + 1));
+    el.innerHTML = scores.length === sec.items.length
+      ? avg(scores).toFixed(1) + '<small> 分</small>'
+      : `—<small> ${scores.length}/${sec.items.length}</small>`;
+  });
+  const done = filled === allItems.length;
+  $('#avgAll').innerHTML = done
+    ? avg(allScores).toFixed(1) + '<small> 分</small>'
+    : `—<small> 已評 ${filled}/${allItems.length} 項</small>`;
+}
+const avg = a => a.reduce((x,y)=>x+y,0) / a.length;
+
+/* 民國年 */
+function minguo(iso){
+  if(!iso) return '';
+  const [y,m,d] = iso.split('-').map(Number);
+  return `民國 ${y-1911} 年 ${m} 月 ${d} 日`;
+}
+function bindMinguo(id, outId){
+  const i = $('#'+id), o = $('#'+outId);
+  const upd = () => o.textContent = minguo(i.value);
+  i.addEventListener('change', upd); upd();
+}
+
+/* 驗證 */
+const wrapOf = n => document.querySelector(`[data-field="${n}"]`);
+function setErr(w){ w && w.classList.add('is-error'); }
+function clearErr(w){ w && w.classList.remove('is-error'); }
+
+function validate(){
+  let bad = null, missItems = 0;
+  $$('[data-field]').forEach(clearErr);
+
+  ['spName','trainDate','trainer','fileDate'].forEach(n => {
+    if(!$('#'+n).value.trim()){ setErr(wrapOf(n)); bad = bad || wrapOf(n); }
+  });
+  allItems.forEach(code => {
+    if(!document.querySelector(`input[name="item-${code}"]:checked`)){
+      const w = wrapOf('item-' + code); setErr(w); bad = bad || w; missItems++;
+    }
+  });
+  const v = document.querySelector('input[name="verdict"]:checked');
+  if(!v){ setErr(wrapOf('verdict')); bad = bad || wrapOf('verdict'); }
+  if(v && v.value !== '推薦執行' && !$('#comment').value.trim()){
+    setErr(wrapOf('comment')); bad = bad || wrapOf('comment');
+  }
+
+  if(bad){
+    $('#status').textContent = missItems
+      ? `尚有 ${missItems} 個評核項目未評分，已標示為紅底`
+      : '有必填欄位未完成，已標示為紅色';
+    if(bad.scrollIntoView) bad.scrollIntoView({behavior:'smooth', block:'center'});
+    const f = bad.querySelector('input,select,textarea');
+    f && f.focus({preventScroll:true});
+  }
+  return !bad;
+}
+
+/* 收集 */
+function collect(){
+  const g = id => $('#'+id).value.trim();
+  const items = {}, secAvg = {};
+  let all = [];
+  SECTIONS.forEach((sec, idx) => {
+    const scores = [];
+    sec.items.forEach(([code]) => {
+      const sel = document.querySelector(`input[name="item-${code}"]:checked`);
+      const lv = sel ? +sel.value : '';
+      items['item' + code.replace('.','_')] = lv;
+      if(lv){ scores.push(toScore(lv)); all.push(toScore(lv)); }
+    });
+    secAvg['avg' + (idx+1)] = scores.length ? +avg(scores).toFixed(2) : '';
+  });
+  return Object.assign({
+    token: API_TOKEN,
+    spName: g('spName'), spId: g('spId'),
+    trainDate: g('trainDate'), trainDateMinguo: minguo(g('trainDate'))
+  }, items, secAvg, {
+    total: all.length ? +avg(all).toFixed(2) : '',
+    verdict: (document.querySelector('input[name="verdict"]:checked')||{}).value || '',
+    comment: $('#comment').value.trim(),
+    trainer: g('trainer'),
+    fileDate: g('fileDate'), fileDateMinguo: minguo(g('fileDate'))
+  });
+}
+
+/* 草稿 */
+const TEXT_IDS = ['spName','spId','trainDate','comment','trainer','fileDate'];
+function saveDraft(){
+  const d = { text:{}, items:{}, verdict:'' };
+  TEXT_IDS.forEach(id => d.text[id] = $('#'+id).value);
+  allItems.forEach(code => {
+    const s = document.querySelector(`input[name="item-${code}"]:checked`);
+    if(s) d.items[code] = s.value;
+  });
+  const v = document.querySelector('input[name="verdict"]:checked');
+  if(v) d.verdict = v.value;
+  try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); }catch(e){}
+}
+function loadDraft(){
+  let d; try{ d = JSON.parse(localStorage.getItem(DRAFT_KEY)||'null'); }catch(e){}
+  if(!d) return false;
+  TEXT_IDS.forEach(id => { if(d.text && d.text[id]) $('#'+id).value = d.text[id]; });
+  Object.entries(d.items||{}).forEach(([code, lv]) => {
+    const r = document.querySelector(`input[name="item-${code}"][value="${lv}"]`); if(r) r.checked = true;
+  });
+  if(d.verdict){
+    const r = document.querySelector(`input[name="verdict"][value="${d.verdict}"]`); if(r) r.checked = true;
+  }
+  return true;
+}
+
+/* 送出 */
+async function submit(){
+  if(!validate()) return;
+  const btn = $('#btnSubmit'), box = $('#result');
+  btn.disabled = true; btn.textContent = '送出中……';
+  box.className = 'result';
+  const payload = JSON.stringify(collect());
+  try{
+    const res = await fetch(API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},   // 避免 CORS preflight
+      body: payload
+    });
+    const out = await res.json();
+    if(!out.success) throw new Error(out.error || '伺服器回報失敗');
+    done(out.recordId, out.total);
+  }catch(err){
+    try{
+      await fetch(API_URL, {method:'POST', mode:'no-cors',
+        headers:{'Content-Type':'text/plain;charset=utf-8'}, body: payload});
+      done(null, null, '已送出，但瀏覽器無法讀取伺服器回應，請至試算表確認該筆紀錄。');
+    }catch(e2){
+      box.className = 'result bad show';
+      box.innerHTML = '<h3>送出失敗</h3><p>網路或部署設定有問題，資料未寫入。請確認網路連線與 API 網址後再送出一次，填寫內容仍保留在表單中。</p>';
+      btn.disabled = false; btn.textContent = '重新送出';
+    }
+  }
+}
+function done(recordId, total, warn){
+  const box = $('#result'), btn = $('#btnSubmit');
+  box.className = 'result ok show';
+  box.innerHTML = '<h3>評核已送出</h3>' +
+    (recordId ? `<p>紀錄編號：<code>${recordId}</code>${total ? `，換算總分 <code>${total}</code> 分` : ''}，已寫入臨床技能中心紀錄檔。</p>` : '') +
+    (warn ? `<p>${warn}</p>` : '') +
+    '<p>需要紙本簽名請按「列印簽名用紙本」；要評下一位 SP 請重新整理頁面。</p>';
+  btn.textContent = '已送出';
+  localStorage.removeItem(DRAFT_KEY);
+  $('#status').textContent = '本筆已完成，草稿已清除';
+  if(box.scrollIntoView) box.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+/* 啟動 */
+(function init(){
+  const form = $('#f');
+
+  // 先綁事件，確保任何後續錯誤都不會讓按鈕失效
+  form.addEventListener('change', () => { recalc(); saveDraft(); });
+  form.addEventListener('input',  saveDraft);
+  form.addEventListener('submit', e => { e.preventDefault(); submit(); });
+  $('#btnPrint').addEventListener('click', () => window.print());
+
+  buildMatrix();
+  const today = new Date().toISOString().slice(0,10);
+  $('#trainDate').value = today;
+  $('#fileDate').value  = today;
+  bindMinguo('trainDate','trainDateMinguo');
+  bindMinguo('fileDate','fileDateMinguo');
+
+  try{ if(loadDraft()) $('#status').textContent = '已載入上次未送出的草稿'; }catch(e){}
+  recalc();
+
+  $('#btnClear').addEventListener('click', () => {
+    if(!confirm('確定清除目前填寫的內容？此動作無法復原。')) return;
+    localStorage.removeItem(DRAFT_KEY);
+    form.reset();
+    $$('[data-field]').forEach(clearErr);
+    $('#trainDate').value = today; $('#fileDate').value = today;
+    $('#trainDate').dispatchEvent(new Event('change'));
+    $('#fileDate').dispatchEvent(new Event('change'));
+    recalc();
+    $('#status').textContent = '草稿已清除';
+  });
+})();
+</script>
+</body>
+</html>
