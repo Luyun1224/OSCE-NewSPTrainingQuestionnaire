@@ -80,6 +80,39 @@ button:disabled{opacity:.5;cursor:progress}
 .axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:var(--sp-2);padding-left:0}
 .scalenote{font-size:12.5px;color:var(--muted);margin-top:var(--sp-3)}
 
+/* 個人能力雷達與矩陣 */
+.profile-head{display:flex;align-items:flex-end;gap:var(--sp-4);flex-wrap:wrap;margin-bottom:var(--sp-4)}
+.profile-head .fl{min-width:220px}
+.profile-note{margin-left:auto;font-size:12.5px;color:var(--muted)}
+.profile-grid{display:grid;grid-template-columns:minmax(300px,.9fr) minmax(0,1.35fr);gap:var(--sp-5);align-items:center}
+@media(max-width:850px){.profile-grid{grid-template-columns:1fr}.profile-note{width:100%;margin-left:0}}
+.radar-wrap{min-height:390px;display:flex;align-items:center;justify-content:center;background:#FAFCFF;border:1px solid var(--line);border-radius:var(--r-md)}
+.radar-wrap svg{display:block;width:100%;max-width:470px;height:auto;overflow:visible}
+.radar-grid{fill:none;stroke:var(--line-2);stroke-width:1}
+.radar-axis{stroke:#D8E0E9;stroke-width:1}
+.radar-overall{fill:rgba(124,136,153,.10);stroke:#7C8899;stroke-width:1.5;stroke-dasharray:5 4}
+.radar-person{fill:rgba(243,146,32,.22);stroke:var(--orange-deep);stroke-width:2.5}
+.radar-dot{fill:var(--orange-deep);stroke:#fff;stroke-width:1.5}
+.radar-label{fill:var(--ink-soft);font-family:var(--font);font-size:11px}
+.radar-scale{fill:var(--muted);font-family:var(--font);font-size:9px}
+.radar-legend{display:flex;justify-content:center;gap:var(--sp-4);font-size:12.5px;color:var(--ink-soft);margin-top:var(--sp-2)}
+.radar-legend i{display:inline-block;width:18px;height:3px;margin:0 6px 3px 0;background:var(--orange-deep)}
+.radar-legend .overall i{height:0;border-top:2px dashed var(--muted);background:none}
+.matrix-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);margin-bottom:var(--sp-4)}
+.matrix-stat{padding:var(--sp-3);border:1px solid var(--line);border-radius:var(--r);background:#fff}
+.matrix-stat span{display:block;font-size:12px;color:var(--muted);line-height:1.4}
+.matrix-stat b{display:block;margin-top:3px;color:var(--navy);font-size:21px;font-variant-numeric:tabular-nums}
+.ability-matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-2)}
+@media(max-width:560px){.ability-matrix,.matrix-summary{grid-template-columns:1fr}}
+.ability-cell{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:var(--r);padding:10px var(--sp-3);background:#fff}
+.ability-cell::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--cell)}
+.ability-cell .cell-top{display:flex;justify-content:space-between;gap:var(--sp-2);align-items:baseline}
+.ability-cell .cell-name{font-size:13px;color:var(--ink-soft);line-height:1.4}
+.ability-cell b{font-size:16px;color:var(--navy);font-variant-numeric:tabular-nums}
+.ability-cell .mini-track{height:4px;background:#EDF1F6;margin-top:7px;border-radius:2px;overflow:hidden}
+.ability-cell .mini-track i{display:block;height:100%;width:var(--width);background:var(--cell)}
+.ability-empty{grid-column:1/-1;padding:var(--sp-7);text-align:center;color:var(--muted);border:1px dashed var(--line-2);border-radius:var(--r)}
+
 /* 分布條 */
 .dist{display:flex;height:34px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
 .dist span{display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;min-width:0}
@@ -194,6 +227,26 @@ tr.detail td{background:#FAFCFF;white-space:normal;padding:var(--sp-4)}
         <div class="axis"><span>50</span><span>70</span><span>95</span></div>
       </section>
     </div>
+
+    <section class="card" id="profileCard">
+      <h2>個人能力雷達與矩陣</h2>
+      <p class="lede">選擇一位 SP，從能力輪廓看出各項強弱；橘色為個人平均，灰色虛線為目前篩選條件下的全體平均。</p>
+      <div class="profile-head">
+        <div class="fl"><label for="fPerson">受評 SP</label><select id="fPerson"></select></div>
+        <div class="profile-note" id="profileNote">—</div>
+      </div>
+      <div class="profile-grid">
+        <div>
+          <div class="radar-wrap" id="radarChart"></div>
+          <div class="radar-legend"><span><i></i>個人平均</span><span class="overall"><i></i>全體平均</span></div>
+        </div>
+        <div>
+          <div class="matrix-summary" id="matrixSummary"></div>
+          <div class="ability-matrix" id="abilityMatrix"></div>
+          <p class="scalenote">色彩判讀：綠色 80 分以上、橘色 70–79.9 分、紅色低於 70 分。若同一人有多次評核，採目前篩選結果的平均。</p>
+        </div>
+      </div>
+    </section>
 
     <section class="card">
       <h2>12 項評核項目平均（由低到高）</h2>
@@ -403,7 +456,7 @@ function applyFilters(){
 /* ── 繪製 ── */
 function render(){
   applyFilters();
-  renderKpi(); renderDist(); renderSections(); renderVerdictScores(); renderItems(); renderTrainers(); renderTable();
+  renderKpi(); renderDist(); renderSections(); renderVerdictScores(); renderItems(); renderProfile(); renderTrainers(); renderTable();
 }
 
 function renderKpi(){
@@ -470,6 +523,74 @@ function renderItems(){
   }).sort((a,b) => (a.avg===null) - (b.avg===null) || a.avg - b.avg);
   $('#barsItem').innerHTML = stats.map(s =>
     barHtml(`<b>${s.label.slice(0,3)}</b>${s.label.slice(4)}`, s.avg)).join('');
+}
+
+/* ── 個人能力輪廓：雷達圖 + 能力矩陣 ── */
+function renderProfile(){
+  const select = $('#fPerson');
+  const current = select.value;
+  const people = [...new Set(VIEW.map(r=>String(r.spName||'').trim()).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,'zh-Hant'));
+  select.innerHTML = people.length
+    ? people.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('')
+    : '<option value="">目前沒有符合條件的 SP</option>';
+  if(people.includes(current)) select.value = current;
+  if(!people.length){
+    $('#profileNote').textContent = '—';
+    $('#radarChart').innerHTML = '<div class="ability-empty">沒有可呈現的個人資料</div>';
+    $('#matrixSummary').innerHTML = '';
+    $('#abilityMatrix').innerHTML = '<div class="ability-empty">請調整上方篩選條件</div>';
+    return;
+  }
+
+  const person = select.value || people[0];
+  select.value = person;
+  const rows = VIEW.filter(r=>String(r.spName||'').trim()===person);
+  const personal = ITEM_KEYS.map((k,i)=>mean(rows.map(r=>r.scores[i]).filter(v=>v!==null)));
+  const overall = ITEM_KEYS.map((k,i)=>mean(VIEW.map(r=>r.scores[i]).filter(v=>v!==null)));
+  $('#profileNote').textContent = `${rows.length} 次評核的平均能力輪廓`;
+  drawRadar(personal, overall, person);
+
+  const sectionRanges = [[0,5],[5,8],[8,12]];
+  $('#matrixSummary').innerHTML = sectionRanges.map((range,i)=>{
+    const score = mean(personal.slice(range[0],range[1]).filter(v=>v!==null));
+    return `<div class="matrix-stat"><span>${['一、','二、','三、'][i]}${SEC_LABELS[i]}</span><b>${f1(score)}</b></div>`;
+  }).join('');
+  $('#abilityMatrix').innerHTML = personal.map((score,i)=>{
+    const color = score===null ? '#C6D0DC' : score>=80 ? 'var(--ok)' : score>=70 ? 'var(--warn)' : 'var(--danger)';
+    const width = score===null ? 0 : Math.max(0,Math.min(100,(score-MIN)/(MAX-MIN)*100));
+    return `<div class="ability-cell" style="--cell:${color};--width:${width}%">
+      <div class="cell-top"><span class="cell-name">${esc(ITEM_LABELS[ITEM_KEYS[i]])}</span><b>${f1(score)}</b></div>
+      <div class="mini-track"><i></i></div></div>`;
+  }).join('');
+}
+
+function drawRadar(personal, overall, person){
+  const size=440, cx=220, cy=220, radius=142, count=ITEM_KEYS.length;
+  const point = (i,value) => {
+    const angle=-Math.PI/2 + i*Math.PI*2/count;
+    const ratio=value===null ? 0 : Math.max(0,Math.min(1,(value-MIN)/(MAX-MIN)));
+    return [cx+Math.cos(angle)*radius*ratio, cy+Math.sin(angle)*radius*ratio];
+  };
+  const polygon = values => values.map((v,i)=>point(i,v).map(n=>n.toFixed(1)).join(',')).join(' ');
+  const grids=[.25,.5,.75,1].map(r=>{
+    const pts=Array.from({length:count},(_,i)=>point(i,MIN+(MAX-MIN)*r).map(n=>n.toFixed(1)).join(',')).join(' ');
+    return `<polygon class="radar-grid" points="${pts}"/>`;
+  }).join('');
+  const axes=Array.from({length:count},(_,i)=>{
+    const edge=point(i,MAX); return `<line class="radar-axis" x1="${cx}" y1="${cy}" x2="${edge[0]}" y2="${edge[1]}"/>`;
+  }).join('');
+  const labels=ITEM_KEYS.map((k,i)=>{
+    const angle=-Math.PI/2+i*Math.PI*2/count, r=radius+24;
+    const x=cx+Math.cos(angle)*r, y=cy+Math.sin(angle)*r;
+    const anchor=Math.cos(angle)>.25?'start':Math.cos(angle)<-.25?'end':'middle';
+    return `<text class="radar-label" x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="${anchor}">${esc(ITEM_LABELS[k].replace(/^\d\.\d\s*/,''))}</text>`;
+  }).join('');
+  const dots=personal.map((v,i)=>{const p=point(i,v);return v===null?'':`<circle class="radar-dot" cx="${p[0]}" cy="${p[1]}" r="4"><title>${esc(ITEM_LABELS[ITEM_KEYS[i]])}：${f1(v)} 分</title></circle>`;}).join('');
+  $('#radarChart').innerHTML = `<svg viewBox="0 0 ${size} ${size}" role="img" aria-labelledby="radarTitle radarDesc">
+    <title id="radarTitle">${esc(person)}的十二項能力雷達圖</title><desc id="radarDesc">橘色區域為個人平均，灰色虛線為篩選資料的全體平均，分數範圍五十至九十五分。</desc>
+    ${grids}${axes}<text class="radar-scale" x="${cx+4}" y="${cy-radius+3}">95</text><text class="radar-scale" x="${cx+4}" y="${cy-3}">50</text>
+    <polygon class="radar-overall" points="${polygon(overall)}"/><polygon class="radar-person" points="${polygon(personal)}"/>${dots}${labels}</svg>`;
 }
 
 function renderTrainers(){
@@ -557,6 +678,7 @@ function exportCsv(){
 /* ── 啟動 ── */
 ['#fYear','#fTrainer','#fVerdict'].forEach(s => $(s).addEventListener('change', render));
 $('#fQ').addEventListener('input', render);
+$('#fPerson').addEventListener('change', renderProfile);
 $('#btnReset').addEventListener('click', () => {
   ['#fYear','#fTrainer','#fVerdict'].forEach(s => $(s).value = '');
   $('#fQ').value = ''; render();
