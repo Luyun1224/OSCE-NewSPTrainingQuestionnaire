@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新進標準化病人訓練成效儀表板｜奇美醫院臨床技能中心</title>
+<style>
+:root{
+  --navy:#0B1A3A; --navy-2:#1B3163; --navy-3:#2D4A80;
+  --orange:#F39220; --orange-deep:#D97A0A;
+  --paper:#F5F7FA; --card:#FFF;
+  --ink:#1B2430; --ink-soft:#4A5768; --muted:#7C8899;
+  --line:#DFE5EC; --line-2:#C6D0DC;
+  --danger:#B3261E; --warn:#C77700; --ok:#1B6E4F;
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--sp-7:48px;
+  --r:4px; --r-md:8px;
+  --font:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.7}
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--sp-4) var(--sp-7)}
+
+.masthead{background:var(--navy);color:#fff;border-bottom:4px solid var(--orange)}
+.masthead .wrap{padding:var(--sp-6) var(--sp-4) var(--sp-5);display:flex;align-items:flex-end;gap:var(--sp-4);flex-wrap:wrap}
+.masthead .org{margin:0;font-size:14px;letter-spacing:.08em;color:#B9C6DC}
+.masthead h1{margin:var(--sp-2) 0 0;font-size:26px;font-weight:700}
+.meta{margin-left:auto;text-align:right;font-size:13px;color:#9FB1CC;line-height:1.6}
+.meta b{color:var(--orange);font-size:15px}
+
+/* 篩選列 */
+.filters{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.filters .wrap{display:flex;gap:var(--sp-3);align-items:flex-end;flex-wrap:wrap;padding-top:var(--sp-3);padding-bottom:var(--sp-3)}
+.fl{display:flex;flex-direction:column;gap:var(--sp-1)}
+.fl label{font-size:12.5px;color:var(--muted);font-weight:600}
+select,input[type=search],input[type=date]{font:inherit;font-size:14px;color:var(--ink);background:#fff;
+  border:1px solid var(--line-2);border-radius:var(--r);padding:7px var(--sp-3);min-width:140px}
+select:focus,input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(243,146,32,.2)}
+button{font:inherit;font-size:14px;border-radius:var(--r);border:1px solid var(--line-2);background:#fff;
+  color:var(--navy);font-weight:600;padding:8px var(--sp-4);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--navy);background:#F3F6FB}
+button.primary{background:var(--orange);border-color:var(--orange-deep);color:#3A2200}
+button.primary:hover{background:var(--orange-deep);color:#fff}
+button:disabled{opacity:.5;cursor:progress}
+.spacer{margin-left:auto}
+
+/* 卡片 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:var(--sp-5);margin-top:var(--sp-4);box-shadow:0 1px 2px rgba(11,26,58,.05)}
+.card > h2{margin:0 0 var(--sp-2);font-size:17px;font-weight:700;color:var(--navy)}
+.card > h2 + .lede{margin:0 0 var(--sp-4);font-size:13.5px;color:var(--muted)}
+.card > h2:only-child,.card > h2:last-of-type{margin-bottom:var(--sp-4)}
+.cols{display:grid;gap:var(--sp-4);grid-template-columns:1fr 1fr}
+@media(max-width:900px){.cols{grid-template-columns:1fr}}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-4);margin-top:var(--sp-5)}
+@media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4) var(--sp-5)}
+.kpi.dark{background:var(--navy);border-color:var(--navy)}
+.kpi dt{margin:0;font-size:13px;color:var(--muted)}
+.kpi.dark dt{color:#B9C6DC}
+.kpi dd{margin:var(--sp-1) 0 0;font-size:30px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1.2}
+.kpi.dark dd{color:var(--orange)}
+.kpi dd small{font-size:13px;font-weight:400;color:var(--muted);margin-left:2px}
+.kpi.dark dd small{color:#9FB1CC}
+.kpi .foot{font-size:12.5px;color:var(--muted);margin-top:var(--sp-1)}
+
+/* 長條圖 */
+.bars{display:flex;flex-direction:column;gap:var(--sp-3)}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 1.9fr 54px;gap:var(--sp-3);align-items:center}
+@media(max-width:700px){.bar{grid-template-columns:minmax(0,1fr) 68px;row-gap:var(--sp-1)}
+  .bar .track{grid-column:1/-1;order:3}}
+.bar .nm{font-size:14px;color:var(--ink-soft);line-height:1.4}
+.bar .nm b{color:var(--navy);margin-right:6px}
+.track{height:20px;background:#EDF1F6;border-radius:3px;overflow:hidden;position:relative}
+.fill{height:100%;background:var(--navy-3);border-radius:3px;transition:width .4s ease}
+.fill.low{background:var(--danger)}
+.fill.mid{background:var(--warn)}
+.val{text-align:right;font-size:14px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums}
+.axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:var(--sp-2);padding-left:0}
+.scalenote{font-size:12.5px;color:var(--muted);margin-top:var(--sp-3)}
+
+/* 分布條 */
+.dist{display:flex;height:34px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+.dist span{display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;min-width:0}
+.d1{background:var(--ok)} .d2{background:var(--warn)} .d3{background:var(--danger)}
+.legend{display:flex;gap:var(--sp-4);flex-wrap:wrap;margin-top:var(--sp-3);font-size:13.5px;color:var(--ink-soft)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px}
+
+/* 表格 */
+.tablewrap{overflow-x:auto;margin-top:var(--sp-2)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px var(--sp-3);text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:#F7F9FC;color:var(--navy);font-weight:700;font-size:13px;cursor:pointer;user-select:none;position:sticky;top:0}
+th.sorted::after{content:"▾";margin-left:5px;color:var(--orange-deep)}
+th.sorted.asc::after{content:"▴"}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.row{cursor:pointer}
+tr.row:hover td{background:#F3F6FB}
+.tag{display:inline-block;padding:2px 9px;border-radius:10px;font-size:12.5px;font-weight:700}
+.t1{background:#E8F4EE;color:var(--ok)} .t2{background:#FDF3E3;color:var(--warn)} .t3{background:var(--danger);color:#fff}
+.score-strong{color:var(--navy);font-weight:700}
+.score-weak{color:var(--danger);font-weight:700}
+tr.detail td{background:#FAFCFF;white-space:normal;padding:var(--sp-4)}
+.chips{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.chip{border:1px solid var(--line-2);border-radius:var(--r);padding:4px 9px;font-size:12.5px;background:#fff}
+.chip b{color:var(--navy);margin-left:6px;font-variant-numeric:tabular-nums}
+.chip.weak{border-color:#E7B4B0;background:#FDF2F1}
+.chip.weak b{color:var(--danger)}
+.comment{margin-top:var(--sp-3);padding:var(--sp-3) var(--sp-4);background:#FFF8EE;
+  border-left:4px solid var(--orange);border-radius:0 var(--r) var(--r) 0;font-size:14px;line-height:1.7}
+
+/* 狀態 */
+.state{padding:var(--sp-7) var(--sp-4);text-align:center;color:var(--muted)}
+.state h3{margin:0 0 var(--sp-2);color:var(--navy);font-size:17px}
+.state code{background:#EDF1F6;border:1px solid var(--line);padding:1px 5px;border-radius:3px;font-size:13px;color:var(--navy)}
+.state ol{color:var(--ink-soft);font-size:14.5px}
+.state a{text-decoration:none}
+.state.bad h3{color:var(--danger)}
+.hidden{display:none}
+.skeleton{height:14px;background:linear-gradient(90deg,#EDF1F6,#F7F9FC,#EDF1F6);border-radius:3px;animation:sk 1.2s infinite}
+@keyframes sk{0%{opacity:.6}50%{opacity:1}100%{opacity:.6}}
+
+@media print{
+  .filters,button{display:none !important}
+  body{background:#fff}
+  .card{break-inside:avoid;box-shadow:none}
+  .masthead{background:#fff;color:#000;border-bottom:2px solid #000}
+  .masthead .org,.meta{color:#333}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div>
+      <p class="org">奇美醫療財團法人奇美醫院　教學部臨床技能中心</p>
+      <h1>新進標準化病人訓練成效儀表板</h1>
+    </div>
+    <div class="meta" id="meta"><span class="skeleton" style="display:block;width:150px;height:12px"></span></div>
+  </div>
+</header>
+
+<div class="filters">
+  <div class="wrap">
+    <div class="fl"><label for="fYear">訓練年度</label><select id="fYear"><option value="">全部</option></select></div>
+    <div class="fl"><label for="fTrainer">訓練師</label><select id="fTrainer"><option value="">全部</option></select></div>
+    <div class="fl"><label for="fVerdict">綜合評估</label><select id="fVerdict">
+      <option value="">全部</option><option>推薦執行</option><option>需加強訓練</option><option>不建議</option></select></div>
+    <div class="fl"><label for="fQ">搜尋 SP 姓名</label><input type="search" id="fQ" placeholder="輸入姓名"></div>
+    <div class="fl spacer"><label>&nbsp;</label><button id="btnReset">清除條件</button></div>
+    <div class="fl"><label>&nbsp;</label><button id="btnCsv">匯出 CSV</button></div>
+    <div class="fl"><label>&nbsp;</label><button class="primary" id="btnReload">重新載入</button></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div id="stateBox" class="state"><h3>載入中……</h3><p>正在讀取試算表資料</p></div>
+
+  <main id="main" class="hidden">
+
+    <dl class="kpis">
+      <div class="kpi"><dt>評核人次</dt><dd id="kCount">—</dd><div class="foot" id="kCountFoot">&nbsp;</div></div>
+      <div class="kpi"><dt>受評 SP 人數</dt><dd id="kPeople">—</dd><div class="foot" id="kPeopleFoot">&nbsp;</div></div>
+      <div class="kpi"><dt>推薦執行比例</dt><dd id="kPass">—</dd><div class="foot" id="kPassFoot">&nbsp;</div></div>
+      <div class="kpi dark"><dt>平均換算總分</dt><dd id="kAvg">—</dd><div class="foot" id="kAvgFoot">&nbsp;</div></div>
+    </dl>
+
+    <section class="card">
+      <h2>訓練師綜合評估分布</h2>
+      <p class="lede">每一筆評核的最終判定；「需加強訓練」與「不建議」代表尚未放行執行教案。</p>
+      <div class="dist" id="dist"></div>
+      <div class="legend">
+        <span><i class="d1" style="background:var(--ok)"></i>推薦執行 <b id="lg1">0</b></span>
+        <span><i class="d2" style="background:var(--warn)"></i>需加強訓練 <b id="lg2">0</b></span>
+        <span><i class="d3" style="background:var(--danger)"></i>不建議 <b id="lg3">0</b></span>
+      </div>
+    </section>
+
+    <div class="cols">
+      <section class="card">
+        <h2>三構面平均</h2>
+        <p class="lede">看整體新進 SP 在哪一個構面最吃力。</p>
+        <div class="bars" id="barsSec"></div>
+        <div class="axis"><span>50</span><span>70</span><span>95</span></div>
+      </section>
+
+      <section class="card">
+        <h2>綜合評估對應的分數落點</h2>
+        <p class="lede">用來檢視「幾分以上會被判定為推薦執行」，作為日後訂定放行標準的參考。</p>
+        <div class="bars" id="barsVerdict"></div>
+        <div class="axis"><span>50</span><span>70</span><span>95</span></div>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>12 項評核項目平均（由低到高）</h2>
+      <p class="lede">最上面幾項就是新進 SP 普遍最弱的能力，可直接回饋到培訓課程的時數配置。</p>
+      <div class="bars" id="barsItem"></div>
+      <div class="axis"><span>50</span><span>70</span><span>95</span></div>
+      <p class="scalenote">量表換算：10 分＝95、9＝90、8＝85、7＝80、6＝75、5＝70、4＝65、3＝60、2＝55、1＝50。</p>
+    </section>
+
+    <section class="card">
+      <h2>訓練師評分比較</h2>
+      <p class="lede">同一批新進 SP 由不同訓練師評核時，平均給分若差距明顯，代表評分尺度需要校準。</p>
+      <div class="tablewrap">
+        <table id="tblTrainer">
+          <thead><tr><th>訓練師</th><th class="num">評核人次</th><th class="num">平均總分</th>
+            <th class="num">最低</th><th class="num">最高</th><th class="num">推薦執行</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>評核明細</h2>
+      <p class="lede">點任一列可展開該次評核的 12 項分數與訓練師建議。</p>
+      <div class="tablewrap">
+        <table id="tblDetail">
+          <thead><tr>
+            <th data-sort="trainDate">訓練日期</th>
+            <th data-sort="spName">受評 SP</th>
+            <th data-sort="trainer">訓練師</th>
+            <th data-sort="avg1" class="num">構面一</th>
+            <th data-sort="avg2" class="num">構面二</th>
+            <th data-sort="avg3" class="num">構面三</th>
+            <th data-sort="total" class="num">總分</th>
+            <th data-sort="verdict">綜合評估</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ═══ 與表單同一組設定 ═══ */
+const API_URL   = 'https://script.google.com/macros/s/AKfycbzQpbTM1D8f_HKwjmXe-IjnFOsbXkxAmQapH6rgHpTAtwn66tIST6vlCz6X_zScFH4s/exec';
+const API_TOKEN = 'CHIMEI-SPT-2026';
+/* ═════════════════════ */
+
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+const ITEM_LABELS = {
+  item1_1:'1.1 熟悉病史',   item1_2:'1.2 症狀呈現',   item1_3:'1.3 情緒與態度',
+  item1_4:'1.4 非語言表達', item1_5:'1.5 角色一致性',
+  item2_1:'2.1 資訊提供',   item2_2:'2.2 應變能力',   item2_3:'2.3 穩定性',
+  item3_1:'3.1 守時與準備', item3_2:'3.2 接受指導',   item3_3:'3.3 學習意願', item3_4:'3.4 團隊合作'
+};
+const ITEM_KEYS = Object.keys(ITEM_LABELS);
+const SEC_LABELS = ['劇本掌握與角色扮演','標準化與互動','專業態度與學習'];
+const MIN = 50, MAX = 95;                      // 換算分數的理論上下限
+const toScore = lv => 45 + Number(lv) * 5;
+const num = v => { const n = Number(v); return isFinite(n) && v !== '' && v !== null ? n : null; };
+const mean = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : null;
+const f1 = n => n === null ? '—' : n.toFixed(1);
+const pct = (a,b) => b ? Math.round(a/b*100) : 0;
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+let RAW = [], VIEW = [], sortKey = 'trainDate', sortAsc = false;
+
+/* ── 讀取資料：先試 fetch，失敗再走 JSONP ── */
+const DATA_URL = () => API_URL + '?action=data&token=' + encodeURIComponent(API_TOKEN);
+
+function viaFetch(url){
+  return fetch(url, { redirect:'follow' }).then(r => r.text()).then(txt => {
+    const head = txt.trim().slice(0, 1).toLowerCase();
+    if(head === '<') throw new Error('伺服器回傳的是網頁而不是資料，通常代表部署權限不是「所有人」，或網址不是 /exec 結尾。');
+    try { return JSON.parse(txt); }
+    catch(e){ throw new Error('回應不是有效的 JSON：' + txt.slice(0, 120)); }
+  });
+}
+
+function viaJsonp(url){
+  return new Promise((resolve, reject) => {
+    const cb = 'spcb_' + Date.now();
+    const script = document.createElement('script');
+    const timer = setTimeout(() => { cleanup(); reject(new Error('JSONP 讀取逾時（15 秒無回應）')); }, 15000);
+    function cleanup(){ clearTimeout(timer); delete window[cb]; script.remove(); }
+    window[cb] = res => { cleanup(); resolve(res); };
+    script.onerror = () => { cleanup(); reject(new Error('JSONP 載入失敗，瀏覽器連不上該網址')); };
+    script.src = url + '&callback=' + cb;
+    document.body.appendChild(script);
+  });
+}
+
+async function loadData(){
+  showState('載入中……', '正在讀取試算表資料');
+  $('#btnReload').disabled = true;
+  const url = DATA_URL();
+  let res, errA, errB;
+
+  try { res = await viaFetch(url); }
+  catch(e){ errA = e; try { res = await viaJsonp(url); } catch(e2){ errB = e2; } }
+
+  $('#btnReload').disabled = false;
+
+  if(!res){ return diagnose(url, errA, errB); }
+  if(res.success === false){
+    return showDiag('讀取失敗：' + (res.error || '伺服器回報錯誤'),
+      res.error && res.error.indexOf('驗證') >= 0
+        ? '<p>儀表板的 <code>API_TOKEN</code> 與 Apps Script 的 <code>SHARED_TOKEN</code> 不一致，請確認兩邊是同一組字串。</p>'
+        : '<p>請到 Apps Script 的「執行項目」查看錯誤紀錄。</p>');
+  }
+  if(!Array.isArray(res.rows)){
+    return showDiag('API 版本過舊',
+      '<p>伺服器有回應，但沒有回傳資料欄位，代表 <code>/exec</code> 跑的還是舊版程式。</p>' +
+      '<p>請到 Apps Script：<b>部署 → 管理部署作業 → 鉛筆圖示 → 版本選「新版本」→ 部署</b>。' +
+      '只是貼上新程式碼、按儲存，是不會更新 <code>/exec</code> 的。</p>');
+  }
+
+  RAW = res.rows.map(normalize);
+  buildFilters();
+  render();
+  $('#stateBox').classList.add('hidden');
+  $('#main').classList.remove('hidden');
+  $('#meta').innerHTML = `資料筆數 <b>${RAW.length}</b><br>更新於 ${new Date().toLocaleString('zh-TW',{hour12:false})}`;
+  if(!RAW.length){
+    showState('目前沒有評核資料', '「問卷」分頁還沒有任何一筆紀錄，先用表單送一筆測試資料看看。');
+    $('#stateBox').classList.remove('hidden');
+  }
+}
+
+function diagnose(url, errA, errB){
+  showDiag('讀取失敗',
+    '<p>兩種讀取方式都連不上 Apps Script。請依序確認：</p>' +
+    '<ol style="text-align:left;max-width:640px;margin:var(--sp-3) auto;line-height:1.9">' +
+    '<li><b>有沒有重新部署？</b>貼上新的 <code>Code.gs</code> 後，必須「部署 → 管理部署作業 → 鉛筆 → 版本選新版本 → 部署」。</li>' +
+    '<li><b>權限是不是「所有人」？</b>部署設定裡「具有存取權的使用者」要選<b>所有人</b>，選「僅限我自己」的話儀表板讀不到。</li>' +
+    '<li><b>網址對不對？</b>要用 <code>/exec</code> 結尾，不是 <code>/dev</code>。</li>' +
+    '</ol>' +
+    '<p style="margin-top:var(--sp-4)"><a href="' + esc(url) + '" target="_blank" rel="noopener" ' +
+    'style="color:var(--orange-deep);font-weight:700">點這裡直接開啟 API 網址測試 →</a><br>' +
+    '<span style="font-size:13px">正常應該看到一段以 <code>{"success":true,"items":…</code> 開頭的文字。' +
+    '若看到登入畫面或錯誤頁，問題就在上面第 1、2 點。</span></p>' +
+    '<p style="margin-top:var(--sp-4);font-size:13px;color:var(--muted)">錯誤訊息：' +
+    esc((errA && errA.message) || '—') + (errB ? '　／　' + esc(errB.message) : '') + '</p>', true);
+}
+
+function showState(title, msg, bad){
+  const b = $('#stateBox');
+  b.className = 'state' + (bad ? ' bad' : '');
+  b.innerHTML = `<h3>${esc(title)}</h3><p>${esc(msg)}</p>`;
+  b.classList.remove('hidden');
+  if(bad) $('#main').classList.add('hidden');
+}
+function showDiag(title, html, bad){
+  const b = $('#stateBox');
+  b.className = 'state' + (bad === false ? '' : ' bad');
+  b.innerHTML = `<h3>${esc(title)}</h3>${html}`;
+  b.classList.remove('hidden');
+  $('#main').classList.add('hidden');
+}
+
+/* ── 正規化：分數一律由項目分重算，不依賴試算表既有欄位 ── */
+function normalize(r){
+  const o = Object.assign({}, r);
+  o.trainDate = String(o.trainDate || '').slice(0,10);
+  o.year = o.trainDate ? Number(o.trainDate.slice(0,4)) : null;
+  o.levels = {};
+  const sc = [];
+  ITEM_KEYS.forEach(k => {
+    const lv = num(o[k]);
+    o.levels[k] = lv;
+    sc.push(lv === null ? null : toScore(lv));
+  });
+  const ok = a => a.filter(v => v !== null);
+  o.scores = sc;
+  o.avg1  = mean(ok(sc.slice(0,5)));
+  o.avg2  = mean(ok(sc.slice(5,8)));
+  o.avg3  = mean(ok(sc.slice(8,12)));
+  o.total = mean(ok(sc));
+  return o;
+}
+
+/* ── 篩選 ── */
+function buildFilters(){
+  fillSelect('#fYear', [...new Set(RAW.map(r=>r.year).filter(Boolean))].sort((a,b)=>b-a).map(y=>[y, y+' 年']));
+  fillSelect('#fTrainer', [...new Set(RAW.map(r=>String(r.trainer||'').trim()).filter(Boolean))].sort().map(t=>[t,t]));
+}
+function fillSelect(sel, pairs){
+  const el = $(sel), cur = el.value;
+  el.innerHTML = '<option value="">全部</option>' + pairs.map(p=>`<option value="${esc(p[0])}">${esc(p[1])}</option>`).join('');
+  if(pairs.some(p=>String(p[0])===cur)) el.value = cur;
+}
+function applyFilters(){
+  const y = $('#fYear').value, t = $('#fTrainer').value, v = $('#fVerdict').value;
+  const q = $('#fQ').value.trim();
+  VIEW = RAW.filter(r =>
+    (!y || String(r.year) === y) &&
+    (!t || String(r.trainer||'').trim() === t) &&
+    (!v || r.verdict === v) &&
+    (!q || String(r.spName||'').includes(q))
+  );
+}
+
+/* ── 繪製 ── */
+function render(){
+  applyFilters();
+  renderKpi(); renderDist(); renderSections(); renderVerdictScores(); renderItems(); renderTrainers(); renderTable();
+}
+
+function renderKpi(){
+  const n = VIEW.length;
+  const people = new Set(VIEW.map(r=>String(r.spName||'').trim()).filter(Boolean)).size;
+  const pass = VIEW.filter(r=>r.verdict==='推薦執行').length;
+  const totals = VIEW.map(r=>r.total).filter(v=>v!==null);
+  const avg = mean(totals);
+
+  $('#kCount').textContent = n;
+  $('#kCountFoot').textContent = n === RAW.length ? '全部資料' : `共 ${RAW.length} 筆中符合條件`;
+  $('#kPeople').textContent = people;
+  $('#kPeopleFoot').textContent = n > people ? `其中 ${n - people} 筆為複評` : '每人各一次評核';
+  $('#kPass').innerHTML = n ? pct(pass,n) + '<small>%</small>' : '—';
+  $('#kPassFoot').textContent = n ? `${pass} / ${n} 筆判定為推薦執行` : '尚無資料';
+  $('#kAvg').innerHTML = avg === null ? '—' : f1(avg) + '<small> 分</small>';
+  $('#kAvgFoot').textContent = totals.length
+    ? `區間 ${f1(Math.min(...totals))} – ${f1(Math.max(...totals))}` : '尚無資料';
+}
+
+function renderDist(){
+  const keys = ['推薦執行','需加強訓練','不建議'];
+  const cnt = keys.map(k => VIEW.filter(r=>r.verdict===k).length);
+  const n = cnt.reduce((a,b)=>a+b,0);
+  $('#dist').innerHTML = n
+    ? keys.map((k,i)=> cnt[i] ? `<span class="d${i+1}" style="width:${cnt[i]/n*100}%" title="${k} ${cnt[i]} 筆">${cnt[i]/n>=.08?cnt[i]:''}</span>` : '').join('')
+    : '<span style="background:#EDF1F6;color:var(--muted);width:100%">尚無資料</span>';
+  cnt.forEach((c,i)=> $('#lg'+(i+1)).textContent = c);
+}
+
+/* 通用長條 */
+function barHtml(label, value, note){
+  if(value === null) return `<div class="bar"><div class="nm">${label}</div><div class="track"></div><div class="val">—</div></div>`;
+  const w = Math.max(0, Math.min(100, (value - MIN) / (MAX - MIN) * 100));
+  const cls = value < 70 ? 'low' : value < 80 ? 'mid' : '';
+  return `<div class="bar">
+    <div class="nm">${label}${note?`<span style="color:var(--muted);font-size:12.5px"> ${note}</span>`:''}</div>
+    <div class="track"><div class="fill ${cls}" style="width:${w}%"></div></div>
+    <div class="val">${f1(value)}</div></div>`;
+}
+
+function renderSections(){
+  const html = [0,1,2].map(i => {
+    const key = 'avg' + (i+1);
+    const vals = VIEW.map(r=>r[key]).filter(v=>v!==null);
+    return barHtml(`<b>${['一','二','三'][i]}</b>${SEC_LABELS[i]}`, mean(vals));
+  }).join('');
+  $('#barsSec').innerHTML = html;
+}
+
+function renderVerdictScores(){
+  const keys = ['推薦執行','需加強訓練','不建議'];
+  $('#barsVerdict').innerHTML = keys.map(k => {
+    const rows = VIEW.filter(r=>r.verdict===k);
+    const vals = rows.map(r=>r.total).filter(v=>v!==null);
+    return barHtml(k, mean(vals), rows.length ? `（${rows.length} 筆）` : '（無）');
+  }).join('');
+}
+
+function renderItems(){
+  const stats = ITEM_KEYS.map((k,i) => {
+    const vals = VIEW.map(r=>r.scores[i]).filter(v=>v!==null);
+    return { key:k, label:ITEM_LABELS[k], avg:mean(vals), n:vals.length };
+  }).sort((a,b) => (a.avg===null) - (b.avg===null) || a.avg - b.avg);
+  $('#barsItem').innerHTML = stats.map(s =>
+    barHtml(`<b>${s.label.slice(0,3)}</b>${s.label.slice(4)}`, s.avg)).join('');
+}
+
+function renderTrainers(){
+  const map = {};
+  VIEW.forEach(r => {
+    const t = String(r.trainer||'未填').trim() || '未填';
+    (map[t] = map[t] || []).push(r);
+  });
+  const rows = Object.entries(map).map(([t, rs]) => {
+    const vals = rs.map(r=>r.total).filter(v=>v!==null);
+    return { t, n:rs.length, avg:mean(vals),
+      min: vals.length?Math.min(...vals):null, max: vals.length?Math.max(...vals):null,
+      pass: rs.filter(r=>r.verdict==='推薦執行').length };
+  }).sort((a,b)=> b.n - a.n);
+
+  $('#tblTrainer tbody').innerHTML = rows.length ? rows.map(r =>
+    `<tr><td>${esc(r.t)}</td><td class="num">${r.n}</td>
+     <td class="num ${r.avg!==null&&r.avg<70?'score-weak':'score-strong'}">${f1(r.avg)}</td>
+     <td class="num">${f1(r.min)}</td><td class="num">${f1(r.max)}</td>
+     <td class="num">${r.pass} / ${r.n}</td></tr>`).join('')
+    : '<tr><td colspan="6" style="color:var(--muted)">尚無資料</td></tr>';
+}
+
+function renderTable(){
+  const tag = v => v==='推薦執行' ? 't1' : v==='需加強訓練' ? 't2' : v==='不建議' ? 't3' : '';
+  const rows = VIEW.slice().sort((a,b) => {
+    let x = a[sortKey], y = b[sortKey];
+    if(x === null || x === undefined || x === '') x = sortAsc ? Infinity : -Infinity;
+    if(y === null || y === undefined || y === '') y = sortAsc ? Infinity : -Infinity;
+    if(typeof x === 'string' || typeof y === 'string'){
+      x = String(x); y = String(y);
+      return sortAsc ? x.localeCompare(y,'zh-Hant') : y.localeCompare(x,'zh-Hant');
+    }
+    return sortAsc ? x - y : y - x;
+  });
+
+  const tb = $('#tblDetail tbody');
+  tb.innerHTML = rows.length ? rows.map((r, i) => {
+    const cell = v => `<td class="num ${v!==null&&v<70?'score-weak':''}">${f1(v)}</td>`;
+    const chips = ITEM_KEYS.map((k, j) => {
+      const lv = r.levels[k];
+      if(lv === null) return `<span class="chip">${ITEM_LABELS[k]}<b>—</b></span>`;
+      const s = toScore(lv);
+      return `<span class="chip${s<70?' weak':''}">${ITEM_LABELS[k]}<b>${lv}（${s}）</b></span>`;
+    }).join('');
+    return `<tr class="row" data-i="${i}">
+        <td>${esc(r.trainDate)}</td><td>${esc(r.spName)}</td><td>${esc(r.trainer)}</td>
+        ${cell(r.avg1)}${cell(r.avg2)}${cell(r.avg3)}
+        <td class="num ${r.total!==null&&r.total<70?'score-weak':'score-strong'}">${f1(r.total)}</td>
+        <td><span class="tag ${tag(r.verdict)}">${esc(r.verdict||'—')}</span></td></tr>
+      <tr class="detail hidden" data-d="${i}"><td colspan="8">
+        <div class="chips">${chips}</div>
+        ${r.comment ? `<div class="comment"><b>訓練師建議</b><br>${esc(r.comment).replace(/\n/g,'<br>')}</div>` : ''}
+        <div style="margin-top:var(--sp-2);font-size:12.5px;color:var(--muted)">紀錄編號 ${esc(r.recordId||'—')}　填表日期 ${esc(r.fileDate||'—')}</div>
+      </td></tr>`;
+  }).join('') : '<tr><td colspan="8" style="color:var(--muted)">沒有符合條件的資料</td></tr>';
+
+  $$('#tblDetail .row').forEach(tr => tr.addEventListener('click', () => {
+    const d = $(`#tblDetail [data-d="${tr.dataset.i}"]`);
+    d && d.classList.toggle('hidden');
+  }));
+  $$('#tblDetail th[data-sort]').forEach(th => {
+    th.classList.toggle('sorted', th.dataset.sort === sortKey);
+    th.classList.toggle('asc', th.dataset.sort === sortKey && sortAsc);
+  });
+}
+
+/* ── CSV ── */
+function exportCsv(){
+  if(!VIEW.length) return;
+  const head = ['訓練日期','受評SP','訓練師','構面一','構面二','構面三','換算總分','綜合評估']
+    .concat(ITEM_KEYS.map(k=>ITEM_LABELS[k])).concat(['具體建議','紀錄編號']);
+  const q = v => '"' + String(v==null?'':v).replace(/"/g,'""') + '"';
+  const body = VIEW.map(r => [r.trainDate, r.spName, r.trainer, f1(r.avg1), f1(r.avg2), f1(r.avg3), f1(r.total), r.verdict]
+    .concat(ITEM_KEYS.map(k => r.levels[k] === null ? '' : r.levels[k]))
+    .concat([r.comment, r.recordId]).map(q).join(','));
+  const csv = '\ufeff' + [head.map(q).join(',')].concat(body).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+  a.download = 'SP訓練成效_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ── 啟動 ── */
+['#fYear','#fTrainer','#fVerdict'].forEach(s => $(s).addEventListener('change', render));
+$('#fQ').addEventListener('input', render);
+$('#btnReset').addEventListener('click', () => {
+  ['#fYear','#fTrainer','#fVerdict'].forEach(s => $(s).value = '');
+  $('#fQ').value = ''; render();
+});
+$('#btnReload').addEventListener('click', loadData);
+$('#btnCsv').addEventListener('click', exportCsv);
+$$('#tblDetail th[data-sort]').forEach(th => th.addEventListener('click', () => {
+  const k = th.dataset.sort;
+  if(k === sortKey) sortAsc = !sortAsc; else { sortKey = k; sortAsc = false; }
+  renderTable();
+}));
+loadData();
+</script>
+</body>
+</html>
